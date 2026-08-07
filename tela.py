@@ -1,36 +1,25 @@
 import tkinter as tk
 from tkinter import messagebox
+import os
 
-def iniciar_tela(funcao_comando):
+def iniciar_tela(funcao_csv, funcao_chamado):
     janela = tk.Tk()
-    janela.title("Gerador de Planilhas CSV")
-    janela.geometry("500x550")
+    janela.title("Automação")
+    janela.geometry("600x650")
 
     def mostrar_ajuda():
         texto_ajuda = "Instrucoes:\n\n"
-        texto_ajuda += "1. Selecione o tipo de equipamento (Estabilizador, Monitor ou Fonte).\n"
-        texto_ajuda += "2. Cole o texto copiado na caixa em branco.\n"
-        texto_ajuda += "3. Clique em 'Gerar CSV'.\n\n"
-        texto_ajuda += "O texto deve seguir este padrao:\n\n"
-        texto_ajuda += "MARCA E MODELO\n"
-        texto_ajuda += "1- NUMERO_DE_SERIE\n"
-        texto_ajuda += "2- NUMERO_DE_SERIE\n\n"
-        texto_ajuda += "Exemplo pratico:\n"
-        texto_ajuda += "KRONNUS 200W\n"
-        texto_ajuda += "1- 718211\n"
-        texto_ajuda += "2- 752550\n"
-        texto_ajuda += "COMTAC 250W\n"
-        texto_ajuda += "1- N0091210x5867"
-        
-        messagebox.showinfo("Ajuda - Como usar", texto_ajuda)
+        texto_ajuda += "Para CSV: Cole no formato MARCA e MODELO, e depois 1- SERIE.\n\n"
+        texto_ajuda += "Para Chamados: Cole as colunas direto da planilha (Produto e Serie).\n"
+        messagebox.showinfo("Ajuda", texto_ajuda)
 
     frame_topo = tk.Frame(janela)
     frame_topo.pack(pady=10)
 
-    rotulo_opcao = tk.Label(frame_topo, text="O que voce quer cadastrar?")
+    rotulo_opcao = tk.Label(frame_topo, text="Selecione o tipo:")
     rotulo_opcao.pack(side=tk.LEFT, padx=5)
 
-    botao_ajuda = tk.Button(frame_topo, text="Ajuda", command=mostrar_ajuda)
+    botao_ajuda = tk.Button(frame_topo, text="?", command=mostrar_ajuda)
     botao_ajuda.pack(side=tk.LEFT)
 
     variavel_opcao = tk.StringVar(janela)
@@ -48,17 +37,42 @@ def iniciar_tela(funcao_comando):
     rotulo_texto = tk.Label(janela, text="Cole o texto aqui:")
     rotulo_texto.pack(pady=5)
 
-    caixa_texto = tk.Text(janela, height=15, width=50)
+    caixa_texto = tk.Text(janela, height=15, width=60)
     caixa_texto.pack()
 
-    def ao_clicar():
+    def ao_clicar_csv():
         texto = caixa_texto.get("1.0", tk.END)
         opcao = variavel_opcao.get()
-        mensagem = funcao_comando(texto, opcao)
+        mensagem = funcao_csv(texto, opcao)
         rotulo_aviso.config(text=mensagem)
+        messagebox.showinfo("Processo Concluido", mensagem)
+        
+    def ao_clicar_chamado():
+        texto = caixa_texto.get("1.0", tk.END)
+        opcao = variavel_opcao.get()
+        rotulo_aviso.config(text="Abrindo chamados... Nao mexa no mouse.")
+        janela.update()
+        mensagem = funcao_chamado(texto, opcao)
+        rotulo_aviso.config(text=mensagem)
+        messagebox.showinfo("Processo Concluido", mensagem)
 
-    botao = tk.Button(janela, text="Gerar CSV", command=ao_clicar)
-    botao.pack(pady=10)
+    def abrir_log():
+        try:
+            os.startfile("automacao.log")
+        except Exception:
+            messagebox.showerror("Erro", "O arquivo automacao.log ainda nao existe.")
+
+    frame_botoes = tk.Frame(janela)
+    frame_botoes.pack(pady=10)
+
+    botao_csv = tk.Button(frame_botoes, text="Gerar CSV", command=ao_clicar_csv)
+    botao_csv.pack(side=tk.LEFT, padx=10)
+
+    botao_chamado = tk.Button(frame_botoes, text="Abrir Chamados no Site", command=ao_clicar_chamado)
+    botao_chamado.pack(side=tk.LEFT, padx=10)
+
+    botao_log = tk.Button(frame_botoes, text="Abrir Logs", command=abrir_log)
+    botao_log.pack(side=tk.LEFT, padx=10)
 
     rotulo_aviso = tk.Label(janela, text="")
     rotulo_aviso.pack(pady=5)
