@@ -61,7 +61,7 @@ def abrir_chamados(texto, tipo_produto):
         
     time.sleep(15)
     
-    for produto, serie in lista_produtos:
+    for indice, (produto, serie) in enumerate(lista_produtos):
         
         logging.info("Processo: Alterando caixa para incidentes | Status: Em andamento")
         try:
@@ -141,18 +141,19 @@ def abrir_chamados(texto, tipo_produto):
         
         time.sleep(5)
         
-        logging.info("Processo: Clicando em Criar chamado no menu | Status: Em andamento")
-        try:
-            botao_menu_lateral = WebDriverWait(navegador, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//a[contains(., 'Criar chamado')]"))
-            )
-            botao_menu_lateral.click()
-            logging.info("Processo: Clicando em Criar chamado no menu | Status: Bem-sucedido")
-        except Exception:
-            logging.error("Processo: Clicando em Criar chamado no menu | Status: Falhou. Recarregando via URL.")
-            navegador.get("http://suporte.gerbit.com.br/front/ticket.form.php")
+        if indice < len(lista_produtos) - 1:
+            logging.info("Processo: Clicando em Criar chamado no menu | Status: Em andamento")
+            try:
+                botao_menu_lateral = WebDriverWait(navegador, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, "//a[contains(., 'Criar chamado')]"))
+                )
+                botao_menu_lateral.click()
+                logging.info("Processo: Clicando em Criar chamado no menu | Status: Bem-sucedido")
+            except Exception:
+                logging.error("Processo: Clicando em Criar chamado no menu | Status: Falhou. Recarregando via URL.")
+                navegador.get("http://suporte.gerbit.com.br/front/ticket.form.php")
             
-        time.sleep(5)
+            time.sleep(5)
         
     logging.info("Processo: Finalizando chamados | Status: Bem-sucedido")
     return "Processo de chamados finalizado!"

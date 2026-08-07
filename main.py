@@ -5,6 +5,7 @@ from chamados import abrir_chamados
 
 logging.basicConfig(
     filename='automacao.log',
+    filemode='w',
     level=logging.INFO,
     format='%(asctime)s | %(message)s',
     datefmt='%d/%m/%Y %H:%M:%S'
