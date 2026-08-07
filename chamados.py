@@ -33,7 +33,7 @@ def abrir_chamados(texto, tipo_produto):
             if "S/N" in produto_upper:
                 pos_sn = produto_upper.find("S/N")
                 if not serie:
-                    serie = produto[pos_sn + 3:].strip()
+                    serie = produto[pos_sn + 2:].strip()
                 produto = produto[:pos_sn].strip()
             elif "W" in produto_upper and not serie:
                 pos_w = produto_upper.rfind("W") + 1
@@ -59,7 +59,7 @@ def abrir_chamados(texto, tipo_produto):
         logging.error("Processo: Abrindo navegador | Status: Falhou")
         return "Erro ao abrir navegador."
         
-    time.sleep(15)
+    time.sleep(12)
     
     for indice, (produto, serie) in enumerate(lista_produtos):
         
@@ -83,14 +83,14 @@ def abrir_chamados(texto, tipo_produto):
         except Exception as erro:
             logging.error("Processo: Alterando caixa para incidentes | Status: Falhou")
             
-        time.sleep(5)
+        time.sleep(2)
         
         logging.info("Processo: Adicionando titulo | Status: Em andamento")
         try:
             nome_completo = tipo_produto + " " + produto
             
             try:
-                campo_titulo = WebDriverWait(navegador, 5).until(
+                campo_titulo = WebDriverWait(navegador, 2).until(
                     EC.presence_of_element_located((By.XPATH, "//input[@name='name']"))
                 )
             except Exception:
@@ -102,7 +102,7 @@ def abrir_chamados(texto, tipo_produto):
         except Exception as erro:
             logging.error("Processo: Adicionando titulo | Status: Falhou")
             
-        time.sleep(2)
+        time.sleep(0.2)
         
         logging.info("Processo: Adicionando descricao | Status: Em andamento")
         try:
@@ -129,7 +129,7 @@ def abrir_chamados(texto, tipo_produto):
             except Exception as erro_js:
                 logging.error("Processo: Adicionando descricao | Status: Falhou")
         
-        time.sleep(2)
+        time.sleep(0.2)
         
         logging.info("Processo: Clicando em adicionar | Status: Em andamento")
         try:
@@ -139,7 +139,7 @@ def abrir_chamados(texto, tipo_produto):
         except Exception as erro:
             logging.error("Processo: Clicando em adicionar | Status: Falhou")
         
-        time.sleep(5)
+        time.sleep(2)
         
         if indice < len(lista_produtos) - 1:
             logging.info("Processo: Clicando em Criar chamado no menu | Status: Em andamento")
@@ -153,7 +153,7 @@ def abrir_chamados(texto, tipo_produto):
                 logging.error("Processo: Clicando em Criar chamado no menu | Status: Falhou. Recarregando via URL.")
                 navegador.get("http://suporte.gerbit.com.br/front/ticket.form.php")
             
-            time.sleep(5)
+            time.sleep(2)
         
     logging.info("Processo: Finalizando chamados | Status: Bem-sucedido")
     return "Processo de chamados finalizado!"
