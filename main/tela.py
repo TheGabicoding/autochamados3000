@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import os
+import sys
 import logging
 
 def iniciar_tela(funcao_csv, funcao_chamado):
@@ -78,8 +79,12 @@ def iniciar_tela(funcao_csv, funcao_chamado):
         messagebox.showinfo("Processo Concluido", mensagem)
 
     def abrir_log():
-        pasta_atual = os.path.dirname(os.path.abspath(__file__))
-        pasta_raiz = os.path.dirname(pasta_atual)
+        if getattr(sys, 'frozen', False):
+            pasta_raiz = os.path.dirname(sys.executable)
+        else:
+            pasta_atual = os.path.dirname(os.path.abspath(__file__))
+            pasta_raiz = os.path.dirname(pasta_atual)
+            
         caminho_log = os.path.join(pasta_raiz, "logs", "automacao.log")
         
         try:

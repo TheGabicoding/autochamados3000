@@ -1,11 +1,16 @@
 import logging
 import os
+import sys
 from tela import iniciar_tela
 from gerador_planilha import gerar_csv
 from chamados import abrir_chamados
 
-pasta_atual = os.path.dirname(os.path.abspath(__file__))
-pasta_raiz = os.path.dirname(pasta_atual)
+if getattr(sys, 'frozen', False):
+    pasta_raiz = os.path.dirname(sys.executable)
+else:
+    pasta_atual = os.path.dirname(os.path.abspath(__file__))
+    pasta_raiz = os.path.dirname(pasta_atual)
+
 pasta_logs = os.path.join(pasta_raiz, 'logs')
 
 if not os.path.exists(pasta_logs):

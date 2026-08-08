@@ -1,6 +1,7 @@
 import os
 import csv
 import logging
+import sys
 from datetime import datetime
 
 def gerar_csv(texto, opcao):
@@ -37,13 +38,13 @@ def gerar_csv(texto, opcao):
                     serie = serie.strip()
                     
                 if opcao == "Estabilizador":
-                    linha_planilha = [marca_atual, serie, "", hoje, "", "ABRIR CHAMADO"]
+                    linha_planilha = [marca_atual, serie, "", hoje, "", "CHAMADO ABERTO"]
                     dados.append(linha_planilha)
                 if opcao == "Fonte":
-                    linha_planilha = [marca_atual, serie, "", hoje, "", "ABRIR CHAMADO"]
+                    linha_planilha = [marca_atual, serie, "", hoje, "", "CHAMADO ABERTO"]
                     dados.append(linha_planilha)
                 if opcao == "Monitor":
-                    linha_planilha = [marca_atual, serie, "", "ABRIR CHAMADO", "", hoje, ""]
+                    linha_planilha = [marca_atual, serie, "", "CHAMADO ABERTO", "", hoje, ""]
                     dados.append(linha_planilha)
             else:
                 marca_atual = linha
@@ -63,9 +64,13 @@ def gerar_csv(texto, opcao):
             nome_arquivo = "monitores.csv"
             cabecalho = ["DESCRIÇÃO", "PATRIMÔNIO Nº", "LOCAL DA RETIRADA", "STATUS", "ENVIO DO CHAMADO", "DATA DE ABERTURA", "LOCAL"]
 
-        caminho_atual = os.path.abspath(__file__)
-        pasta_atual = os.path.dirname(caminho_atual)
-        pasta_raiz = os.path.dirname(pasta_atual)
+        if getattr(sys, 'frozen', False):
+            pasta_raiz = os.path.dirname(sys.executable)
+        else:
+            caminho_atual = os.path.abspath(__file__)
+            pasta_atual = os.path.dirname(caminho_atual)
+            pasta_raiz = os.path.dirname(pasta_atual)
+            
         pasta_planilhas = os.path.join(pasta_raiz, "planilhas")
 
         if not os.path.exists(pasta_planilhas):
