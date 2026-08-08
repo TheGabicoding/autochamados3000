@@ -60,8 +60,8 @@ Economiza tempo e reduz erros na entrada de dados! 💪
 1. Selecione o tipo de equipamento
 2. Cole os dados das colunas da sua planilha (Produto e Série)
 3. Clique em **"Abrir Chamados"**
-4. **NÃO MEXA NO MOUSE** - o programa controlará a navegação automaticamente
-5. Os chamados serão abertos no site Gerbit
+4. Faça login no site da Gerbit, com usuário e senha
+5. Aguarde e os chamados serão abertos automaticamente
 
 ---
 
