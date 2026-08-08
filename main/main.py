@@ -1,29 +1,21 @@
 import logging
 import os
-import sys
+from logging.handlers import RotatingFileHandler
+
+from config import obter_pasta_logs
 from tela import iniciar_tela
 from gerador_planilha import gerar_csv
 from chamados import abrir_chamados
 
-if getattr(sys, 'frozen', False):
-    pasta_raiz = os.path.dirname(sys.executable)
-else:
-    pasta_atual = os.path.dirname(os.path.abspath(__file__))
-    pasta_raiz = os.path.dirname(pasta_atual)
+caminho_log = os.path.join(obter_pasta_logs(), "automacao.log")
 
-pasta_logs = os.path.join(pasta_raiz, 'logs')
+# RotatingFileHandler em vez de filemode='w': mantém um histórico (últimos
+# arquivos .log.1, .log.2...) em vez de apagar tudo a cada execução, o que
+# ajuda muito quando o usuário só percebe um problema dias depois.
+handler = RotatingFileHandler(caminho_log, maxBytes=1_000_000, backupCount=3, encoding="utf-8")
+handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s", datefmt="%d/%m/%Y %H:%M:%S"))
 
-if not os.path.exists(pasta_logs):
-    os.makedirs(pasta_logs)
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 
-caminho_log = os.path.join(pasta_logs, 'automacao.log')
-
-logging.basicConfig(
-    filename=caminho_log,
-    filemode='w',
-    level=logging.INFO,
-    format='%(asctime)s | %(message)s',
-    datefmt='%d/%m/%Y %H:%M:%S'
-)
-
-iniciar_tela(gerar_csv, abrir_chamados)
+if __name__ == "__main__":
+    iniciar_tela(gerar_csv, abrir_chamados)
