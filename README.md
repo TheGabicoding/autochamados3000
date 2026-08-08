@@ -34,7 +34,7 @@ Economiza tempo e reduz erros na entrada de dados! 💪
 
 1. Acesse a pasta **`main`** deste repositório
 2. Abra a subpasta **`dist`**
-3. Procure pelo arquivo `autochamados3000.exe` (ou similar)
+3. Procure pelo arquivo `autochamados.exe`
 4. Baixe o arquivo clicando nele e depois em "Download"
 
 ### 2️⃣ Executar o Programa
