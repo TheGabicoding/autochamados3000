@@ -1,16 +1,20 @@
 import tkinter as tk
 from tkinter import messagebox
 import os
+import logging
 
 def iniciar_tela(funcao_csv, funcao_chamado):
     janela = tk.Tk()
     janela.title("Automação")
     janela.geometry("600x650")
 
+    texto_para_area_transferencia = tk.StringVar()
+    texto_para_area_transferencia.set("")
+
     def mostrar_ajuda():
         texto_ajuda = "Instrucoes:\n\n"
-        texto_ajuda += "Para CSV: Cole no formato MARCA e MODELO, e depois 1- SERIE.\n\n"
-        texto_ajuda += "Para Chamados: Cole as colunas direto da planilha (Produto e Serie).\n"
+        texto_ajuda = texto_ajuda + "Para CSV: Cole no formato MARCA e MODELO, e depois 1- SERIE.\n\n"
+        texto_ajuda = texto_ajuda + "Para Chamados: Cole as colunas direto da planilha (Produto e Serie).\n"
         messagebox.showinfo("Ajuda", texto_ajuda)
 
     frame_topo = tk.Frame(janela)
@@ -43,10 +47,27 @@ def iniciar_tela(funcao_csv, funcao_chamado):
     def ao_clicar_csv():
         texto = caixa_texto.get("1.0", tk.END)
         opcao = variavel_opcao.get()
-        mensagem = funcao_csv(texto, opcao)
+        
+        mensagem, texto_copiado = funcao_csv(texto, opcao)
+        texto_para_area_transferencia.set(texto_copiado)
+        
+        caixa_texto.delete("1.0", tk.END)
+        
         rotulo_aviso.config(text=mensagem)
         messagebox.showinfo("Processo Concluido", mensagem)
         
+    def copiar_planilha():
+        texto = texto_para_area_transferencia.get()
+        if texto == "":
+            logging.error("Processo: Copiando planilha | Status: Falhou")
+            messagebox.showerror("Erro", "Nenhum dado tratado para copiar.")
+        else:
+            janela.clipboard_clear()
+            janela.clipboard_append(texto)
+            janela.update()
+            logging.info("Processo: Copiando planilha | Status: Bem-sucedido")
+            messagebox.showinfo("Copiado", "Dados copiados para a area de transferencia!")
+
     def ao_clicar_chamado():
         texto = caixa_texto.get("1.0", tk.END)
         opcao = variavel_opcao.get()
@@ -57,8 +78,12 @@ def iniciar_tela(funcao_csv, funcao_chamado):
         messagebox.showinfo("Processo Concluido", mensagem)
 
     def abrir_log():
+        pasta_atual = os.path.dirname(os.path.abspath(__file__))
+        pasta_raiz = os.path.dirname(pasta_atual)
+        caminho_log = os.path.join(pasta_raiz, "logs", "automacao.log")
+        
         try:
-            os.startfile("automacao.log")
+            os.startfile(caminho_log)
         except Exception:
             messagebox.showerror("Erro", "O arquivo automacao.log ainda nao existe.")
 
@@ -67,6 +92,9 @@ def iniciar_tela(funcao_csv, funcao_chamado):
 
     botao_csv = tk.Button(frame_botoes, text="Gerar CSV", command=ao_clicar_csv)
     botao_csv.pack(side=tk.LEFT, padx=10)
+    
+    botao_copiar = tk.Button(frame_botoes, text="Copiar Planilha", command=copiar_planilha)
+    botao_copiar.pack(side=tk.LEFT, padx=10)
 
     botao_chamado = tk.Button(frame_botoes, text="Abrir Chamados no Site", command=ao_clicar_chamado)
     botao_chamado.pack(side=tk.LEFT, padx=10)
