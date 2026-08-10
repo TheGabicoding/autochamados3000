@@ -19,9 +19,17 @@ def _montar_linha_padrao(marca, serie, hoje, status):
 
 
 def _montar_linha_monitor(marca, serie, hoje, status):
-    """Ordem de colunas usada por Monitor (layout diferente do padrao)."""
-    return [marca, serie, "", status, "", hoje, ""]
-
+    """Monta a linha do Monitor na ordem exata das colunas da planilha."""
+    return [
+        marca,       # DESCRIÇÃO
+        serie,       # Nº DE SERIE
+        "",          # PATRIMÔNIO Nº
+        "",          # LOCAL DA RETIRADA
+        status,      # STATUS
+        "",          # ENVIO DO CHAMADO
+        hoje,        # DATA DE ABERTURA
+        "",          # LOCAL
+    ]
 
 EQUIPAMENTOS = {
     "Estabilizador": {
@@ -38,7 +46,7 @@ EQUIPAMENTOS = {
     },
     "Monitor": {
         "arquivo": "monitores.csv",
-        "cabecalho": ["DESCRIÇÃO", "PATRIMÔNIO Nº", "LOCAL DA RETIRADA",
+        "cabecalho": ["DESCRIÇÃO", "Nº DE SERIE", "PATRIMÔNIO Nº", "LOCAL DA RETIRADA",
                       "STATUS", "ENVIO DO CHAMADO", "DATA DE ABERTURA", "LOCAL"],
         "montar_linha": _montar_linha_monitor,
     },
